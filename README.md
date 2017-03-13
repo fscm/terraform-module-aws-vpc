@@ -62,9 +62,9 @@ module "my_vpc" {
 - `public_subnets` - **[type: list]** List of the public subnet IDs.
 - `vpc_id` - **[type: string]** The VPC ID.
 
-## Cluster Access
+## VPC Access
 
-This modules provides A security group that will allow access between the VPC
+This modules provides a security group that will allow access between the VPC
 instances on all ports and protocols.
 
 To obtain the ID of that group use the value of the output variable
