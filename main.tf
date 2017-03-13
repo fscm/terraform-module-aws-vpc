@@ -92,11 +92,18 @@ resource "aws_route_table" "public" {
 }
 
 #
+# Availability Zones.
+#
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+#
 # Base VPC subnets and respective routing associations.
 #
 resource "aws_subnet" "private" {
   count                   = "${length(var.private_subnets)}"
-  availability_zone       = "${element(var.azs, count.index)}"
+  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
   cidr_block              = "${element(var.private_subnets, count.index)}"
   vpc_id                  = "${aws_vpc.main.id}"
   map_public_ip_on_launch = false
@@ -104,13 +111,13 @@ resource "aws_subnet" "private" {
     create_before_destroy = true
   }
   tags {
-    Name = "${var.prefix}${var.name}-private-${element(var.azs, count.index)}"
+    Name = "${var.prefix}${var.name}-private-${element(data.aws_availability_zones.available.names, count.index)}"
   }
 }
 
 resource "aws_subnet" "public" {
   count                   = "${length(var.public_subnets)}"
-  availability_zone       = "${element(var.azs, count.index)}"
+  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
   cidr_block              = "${element(var.public_subnets, count.index)}"
   vpc_id                  = "${aws_vpc.main.id}"
   map_public_ip_on_launch = false
@@ -118,7 +125,7 @@ resource "aws_subnet" "public" {
     create_before_destroy = true
   }
   tags {
-    Name = "${var.prefix}${var.name}-public-${element(var.azs, count.index)}"
+    Name = "${var.prefix}${var.name}-public-${element(data.aws_availability_zones.available.names, count.index)}"
   }
 }
 

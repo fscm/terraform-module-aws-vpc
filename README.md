@@ -20,25 +20,20 @@ AWS Command Line Interface installation instructions can be found [here](http://
 
 ## Module Input Variables
 
-- `azs` - List of Availability Zones to use for the VPC subnet(s). *[default value: []]*
 - `cidr` - The CIDR block for the VPC. *[default value: '10.0.0.0/16']*
 - `domain` - **[required]** The domain name to use by default when resolving non Fully Qualified Domain Name of the VPC instance(s).
 - `enable_dns_hostnames` - Should be true if you want to have custom DNS hostnames within the VPC. *[default value: true]*
-- `enable_dns_support` - Should be true if you want to have DNS support whitin the VPC. *[default value: true]*
+- `enable_dns_support` - Should be true if you want to have DNS support within the VPC. *[default value: true]*
 - `name` - The name for the VPC. *[default value: 'default']*
 - `prefix` - A prefix to prepend to the VPC name. *[default value: '']*
 - `private_subnets` - List of private subnet CIDRs for the VPC (e.g.: ['10.0.0.128/25']). *[default value: []]*
 - `public_subnets` - List of public subnet CIDRs for this VPC (e.g.: ['10.0.0.0/25']). *[default value: []]*
-
-It is recommended to keep `public_subnets`, `private_subnets`, and `azs` to
-lists of the same length.
 
 ## Usage
 
 ```hcl
 module "my_vpc" {
   source          = "github.com/fscm/terraform-module-aws-vpc"
-  azs             = "us-east-1a,us-east-1b,us-east-1c"
   cidr            = "10.0.0.0/16"
   name            = "vpc"
   prefix          = "mycompany-"

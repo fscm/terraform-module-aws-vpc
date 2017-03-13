@@ -10,12 +10,6 @@
 # terms of the MIT License.
 #
 
-variable "azs" {
-  description = "List of Availability Zones to use for the VPC subnet(s)."
-  default     = []
-  type        = "list"
-}
-
 variable "cidr" {
   description = "The CIDR block for the VPC."
   default     = "10.0.0.0/16"
