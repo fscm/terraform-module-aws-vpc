@@ -52,6 +52,7 @@ resource "aws_nat_gateway" "main" {
 # DHCP configurations.
 #
 resource "aws_vpc_dhcp_options" "main" {
+  count               = "${var.domain != "" ? 1 : 0}"
   domain_name         = "${var.domain}"
   domain_name_servers = ["AmazonProvidedDNS"]
   tags {
@@ -60,8 +61,22 @@ resource "aws_vpc_dhcp_options" "main" {
 }
 
 resource "aws_vpc_dhcp_options_association" "main" {
+  count           = "${var.domain != "" ? 1 : 0}"
   dhcp_options_id = "${aws_vpc_dhcp_options.main.id}"
   vpc_id          = "${aws_vpc.main.id}"
+}
+
+#
+# DNS Zone configurations.
+#
+resource "aws_route53_zone" "private" {
+  count   = "${var.domain != "" ? 1 : 0}"
+  comment = "${var.prefix}${var.name} private DNS"
+  name    = "${var.domain}"
+  vpc_id  = "${aws_vpc.main.id}"
+  tags {
+    Name = "${var.prefix}${var.name}"
+  }
 }
 
 #
@@ -150,8 +165,8 @@ resource "aws_route_table_association" "public" {
 #
 # Default VPC Security Group (allows traffic between instances).
 #
-resource "aws_security_group" "default" {
-  name   = "${var.prefix}${var.name}"
+resource "aws_default_security_group" "default" {
+  name   = "${var.prefix}${var.name}-default"
   vpc_id = "${aws_vpc.main.id}"
   ingress {
     from_port = "0"
@@ -166,6 +181,6 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    Name = "${var.prefix}${var.name}"
+    Name = "${var.prefix}${var.name}-default"
   }
 }

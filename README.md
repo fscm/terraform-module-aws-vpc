@@ -21,7 +21,7 @@ AWS Command Line Interface installation instructions can be found [here](http://
 ## Module Input Variables
 
 - `cidr` - The CIDR block for the VPC. *[default value: '10.0.0.0/16']*
-- `domain` - **[required]** The domain name to use by default when resolving non Fully Qualified Domain Name of the VPC instance(s).
+- `domain` - The domain name to use by default when resolving non Fully Qualified Domain Name of the VPC instance(s). If set to anything other than an empty string it will create a private DNS zone for that domain. *[default value: '']*
 - `enable_dns_hostnames` - Should be true if you want to have custom DNS hostnames within the VPC. *[default value: true]*
 - `enable_dns_support` - Should be true if you want to have DNS support within the VPC. *[default value: true]*
 - `name` - The name for the VPC. *[default value: 'default']*

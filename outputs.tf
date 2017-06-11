@@ -17,7 +17,7 @@ output "cidr" {
 
 output "default_security_group_id" {
   sensitive = false
-  value     = "${aws_security_group.default.id}"
+  value     = "${aws_default_security_group.default.id}"
 }
 
 output "domain" {
@@ -68,4 +68,14 @@ output "public_subnets" {
 output "vpc_id" {
   sensitive = false
   value     = "${aws_vpc.main.id}"
+}
+
+output "dns_zone_id" {
+  sensitive = false
+  value = "${aws_route53_zone.private.zone_id}"
+}
+
+output "dns_resolvers" {
+  sensitive = false
+  value = "${aws_route53_zone.private.name_servers}"
 }
