@@ -57,6 +57,8 @@ module "my_vpc" {
 - `public_route_table_id` - **[type: string]** Public routing table ID.
 - `public_subnets` - **[type: list]** List of the public subnet IDs.
 - `vpc_id` - **[type: string]** The VPC ID.
+- `dns_zone_id` - **[type: list]** List of the DNS Resolvers for the private zone.
+- `dns_resolvers` - **[type: string]** The DNS private zone ID.
 
 ## VPC Access
 
