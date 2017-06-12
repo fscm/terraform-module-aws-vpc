@@ -166,7 +166,7 @@ resource "aws_route_table_association" "public" {
 # Default VPC Security Group (allows traffic between instances).
 #
 resource "aws_default_security_group" "default" {
-  name   = "${var.prefix}${var.name}-default"
+  #name   = "${var.prefix}${var.name}-default"
   vpc_id = "${aws_vpc.main.id}"
   ingress {
     from_port = "0"
