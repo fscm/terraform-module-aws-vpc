@@ -18,6 +18,7 @@ variable "cidr" {
 
 variable "domain" {
   description = "The domain name to use by default when resolving non Fully Qualified Domain Name of the VPC instance(s)."
+  default     = ""
   type        = "string"
 }
 
