@@ -76,6 +76,9 @@ To obtain the ID of that group use the value of the output variable
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request
 
+Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for more details on how
+to contribute to this project.
+
 ## Versioning
 
 This project uses [SemVer](http://semver.org/) for versioning. For the versions
