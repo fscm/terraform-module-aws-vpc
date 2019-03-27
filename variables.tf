@@ -16,10 +16,16 @@ variable "cidr" {
   type        = "string"
 }
 
-variable "domain" {
+variable "domain_name" {
   description = "The domain name to use by default when resolving non Fully Qualified Domain Name of the VPC instance(s)."
   default     = ""
   type        = "string"
+}
+
+variable "domain_name_servers" {
+  description = "List of name servers to configure in '/etc/resolv.conf'."
+  default     = ["AmazonProvidedDNS"]
+  type        = "list"
 }
 
 variable "enable_dns_hostnames" {
@@ -32,6 +38,13 @@ variable "enable_dns_support" {
   description = "Should be true if you want to have DNS support whitin the VPC."
   default     = true
   type        = "string"
+}
+
+variable "instance_tenancy" {
+  description = "The tenancy option for instances launched into the VPC."
+  default     = "default"
+  type        = "string"
+
 }
 
 variable "name" {
@@ -52,8 +65,26 @@ variable "private_subnets" {
   type        = "list"
 }
 
+variable "private_subnets_amount" {
+  description = "Number of private subnet to create (only if 'private_subnets' is empty)."
+  default     = "1"
+  type        = "string"
+}
+
 variable "public_subnets" {
   description = "List of public subnet CIDRs for this VPC (e.g.: ['10.0.0.0/25'])."
   default     = []
   type        = "list"
+}
+
+variable "public_subnets_amount" {
+  description = "Number of public subnet to create (only if 'public_subnets' is empty)."
+  default     = "1"
+  type        = "string"
+}
+
+variable "single_nat_gateway" {
+  description = "Should be true if you want to have only one NAT Gateway for all subnets, false if you want to have one NAT Gateway per subnet."
+  default     = true
+  type        = "string"
 }

@@ -20,9 +20,9 @@ output "default_security_group_id" {
   value     = "${aws_default_security_group.default.id}"
 }
 
-output "domain" {
+output "domain_name" {
   sensitive = false
-  value     = "${var.domain}"
+  value     = "${element(concat(aws_vpc_dhcp_options.main.*.domain_name, list("")), 0)}"
 }
 
 output "igw_id" {
@@ -32,12 +32,12 @@ output "igw_id" {
 
 output "nat_eip" {
   sensitive = false
-  value     = "${aws_eip.nat.public_ip}"
+  value     = ["${aws_eip.nat.*.public_ip}"]
 }
 
 output "nat_gw_id" {
   sensitive = false
-  value     = "${aws_nat_gateway.main.id}"
+  value     = ["${aws_nat_gateway.main.*.id}"]
 }
 
 output "prefix" {
@@ -47,7 +47,7 @@ output "prefix" {
 
 output "private_route_table_id" {
   sensitive = false
-  value     = "${aws_route_table.private.id}"
+  value     = ["${aws_route_table.private.*.id}"]
 }
 
 output "private_subnets" {
@@ -57,7 +57,7 @@ output "private_subnets" {
 
 output "public_route_table_id" {
   sensitive = false
-  value     = "${aws_route_table.public.id}"
+  value     = ["${aws_route_table.public.*.id}"]
 }
 
 output "public_subnets" {
@@ -72,10 +72,10 @@ output "vpc_id" {
 
 output "dns_zone_id" {
   sensitive = false
-  value = "${aws_route53_zone.private.zone_id}"
+  value     = "${element(concat(aws_route53_zone.private.*.zone_id, list("")), 0)}"
 }
 
 output "dns_resolvers" {
   sensitive = false
-  value = "${aws_route53_zone.private.name_servers}"
+  value     = ["${aws_route53_zone.private.*.name_servers}"]
 }

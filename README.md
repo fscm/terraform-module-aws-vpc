@@ -21,15 +21,22 @@ AWS Command Line Interface installation instructions can be found [here](http://
 ## Module Input Variables
 
 - `cidr` - The CIDR block for the VPC. *[default value: '10.0.0.0/16']*
-- `domain` - The domain name to use by default when resolving non Fully Qualified Domain Name of the VPC instance(s). If set to anything other than an empty string it will create a private DNS zone for that domain. *[default value: '']*
+- `domain_name` - The domain name to use by default when resolving non Fully Qualified Domain Name of the VPC instance(s). If set to anything other than an empty string it will create a private DNS zone for that domain. *[default value: '']*
+- `domain_name_servers` - List of name servers to be added to the '/etc/resolv.conf' file of the VPC instance(s). *[default value: '["AmazonProvidedDNS"]']*
 - `enable_dns_hostnames` - Should be true if you want to have custom DNS hostnames within the VPC. *[default value: true]*
 - `enable_dns_support` - Should be true if you want to have DNS support within the VPC. *[default value: true]*
+- `instance_tenancy` - The tenancy option for instances launched into the VPC. *[default value: 'default']*
 - `name` - The name for the VPC. *[default value: 'default']*
 - `prefix` - A prefix to prepend to the VPC name. *[default value: '']*
 - `private_subnets` - List of private subnet CIDRs for the VPC (e.g.: ['10.0.0.128/25']). *[default value: []]*
 - `public_subnets` - List of public subnet CIDRs for this VPC (e.g.: ['10.0.0.0/25']). *[default value: []]*
+- `private_subnets_amount` - Number of private subnet to create (only if `private_subnets` is empty). *[default value: '1']*
+- `public_subnets_amount` - Number of public subnet to create (only if `public_subnets` is empty. *[default value: '1']*
+- `single_nat_gateway` - Should be true if you want to have only one NAT Gateway for all subnets, false if you want to have one NAT Gateway per subnet. *[default value: true]*
 
 ## Usage
+
+Example with custom defined subnets:
 
 ```hcl
 module "my_vpc" {
@@ -43,22 +50,36 @@ module "my_vpc" {
 }
 ```
 
+Example with automatically generated subnets:
+
+```hcl
+module "my_vpc" {
+  source                 = "github.com/fscm/terraform-module-aws-vpc"
+  cidr                   = "10.0.0.0/16"
+  domain                 = "mydomain.tld"
+  name                   = "vpc"
+  prefix                 = "mycompany-"
+  private_subnets_amount = "3"
+  public_subnets_amount  = "3"
+}
+```
+
 ## Outputs
 
 - `cidr` - **[type: string]** CIDR of the VPC.
 - `default_security_group_id` - **[type: string]** ID of the VPC default security group.
-- `domain` - **[type: string]** Domain name of the VPC.
+- `domain_name` - **[type: string]** Domain name of the VPC.
 - `igw_id` - **[type: string]** ID of the Internet Gateway instance.
-- `nat_eip` - **[type: string]** Public IP of the Nat instance.
-- `nat_gw_id`- **[type: string]** ID of the Nat Gateway instance.
+- `nat_eip` - **[type: list]** List of the public IP of the Nat instances.
+- `nat_gw_id`- **[type: list]** List of the IDs of the Nat Gateway instances.
 - `prefix` - **[type: string]** The VPC prefix.
-- `private_route_table_id` - **[type: string]** Private routing table ID.
+- `private_route_table_id` - **[type: list]** List of the private routing table IDs.
 - `private_subnets` - **[type: list]** List of the private subnet IDs.
-- `public_route_table_id` - **[type: string]** Public routing table ID.
+- `public_route_table_id` - **[type: list]** List of the public routing table IDs.
 - `public_subnets` - **[type: list]** List of the public subnet IDs.
 - `vpc_id` - **[type: string]** The VPC ID.
-- `dns_zone_id` - **[type: list]** List of the DNS Resolvers for the private zone.
-- `dns_resolvers` - **[type: string]** The DNS private zone ID.
+- `dns_zone_id` - **[type: string]** The DNS private zone ID.
+- `dns_resolvers` - **[type: list]** List of the DNS Resolvers for the private zone.
 
 ## VPC Access
 
