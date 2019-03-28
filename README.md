@@ -66,20 +66,24 @@ module "my_vpc" {
 
 ## Outputs
 
-- `cidr` - **[type: string]** CIDR of the VPC.
-- `default_security_group_id` - **[type: string]** ID of the VPC default security group.
-- `domain_name` - **[type: string]** Domain name of the VPC.
-- `igw_id` - **[type: string]** ID of the Internet Gateway instance.
-- `nat_eip` - **[type: list]** List of the public IP of the Nat instances.
-- `nat_gw_id`- **[type: list]** List of the IDs of the Nat Gateway instances.
+- `cidr` - **[type: string]** The CIDR block of the VPC.
+- `default_network_acl_id` - **[type: string]** The ID of the network ACL created by default on VPC creation.
+- `default_route_table_id` - **[type: string]** The ID of the route table created by default on VPC creation.
+- `default_security_group_id` - **[type: string]** The ID of the security group created by default on VPC creation.
+- `domain_name` - **[type: string]** The suffix domain name to use by default when resolving non Fully Qualified Domain Names.
+- `id` - **[type: string]** The ID of the VPC.
+- `igw_id` - **[type: string]** The ID of the Internet Gateway.
+- `main_route_table_id` - **[type: string]** The ID of the main route table associated with this VPC.
+- `name` - **[type: string]** The VPC name.
+- `nat_eip` - **[type: list]** List of the NATs public IP addresses.
+- `nat_gw_id`- **[type: list]** List of the NATs.
 - `prefix` - **[type: string]** The VPC prefix.
 - `private_route_table_id` - **[type: list]** List of the private routing table IDs.
 - `private_subnets` - **[type: list]** List of the private subnet IDs.
 - `public_route_table_id` - **[type: list]** List of the public routing table IDs.
 - `public_subnets` - **[type: list]** List of the public subnet IDs.
-- `vpc_id` - **[type: string]** The VPC ID.
-- `dns_zone_id` - **[type: string]** The DNS private zone ID.
-- `dns_resolvers` - **[type: list]** List of the DNS Resolvers for the private zone.
+- `dns_zone_id` - **[type: string]** The ID of the private DNS zone of the VPC.
+- `dns_resolvers` - **[type: list]** List of the private resolvers of the VPC.
 
 ## VPC Access
 
