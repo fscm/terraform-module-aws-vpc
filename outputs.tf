@@ -52,17 +52,17 @@ output "igw_id" {
   value       = "${aws_internet_gateway.main.id}"
 }
 
-#output "ipv6_association_id" {
-#  description = "The association ID for the IPv6 CIDR block."
-#  sensitive   = false
-#  value       = "${aws_vpc.default.ipv6_association_id}"
-#}
+output "ipv6_association_id" {
+  description = "The association ID for the IPv6 CIDR block."
+  sensitive   = false
+  value       = "${aws_vpc.main.ipv6_association_id}"
+}
 
-#output "ipv6_cidr_block" {
-#  description = "The IPv6 CIDR block."
-#  sensitive   = false
-#  value       = "${aws_vpc.default.ipv6_cidr_block}"
-#}
+output "ipv6_cidr_block" {
+  description = "The IPv6 CIDR block."
+  sensitive   = false
+  value       = "${aws_vpc.main.ipv6_cidr_block}"
+}
 
 output "main_route_table_id" {
   description = "The ID of the main route table associated with this VPC."

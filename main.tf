@@ -14,7 +14,7 @@
 # Requirements.
 #
 terraform {
-  required_version = ">= 0.10.3" # introduction of Local Values
+  required_version = ">= 0.10.3" # Local Values
 }
 
 #
@@ -22,6 +22,7 @@ terraform {
 #
 locals {
   _newbits = "${ceil(log(var.private_subnets_amount + var.public_subnets_amount, 2))}"
+  _newbits_alt = "${ceil(log(length(var.private_subnets) + length(var.public_subnets), 2))}"
   _private_subnets = "${length(var.private_subnets)}"
   _public_subnets = "${length(var.public_subnets)}"
 }
@@ -30,7 +31,7 @@ locals {
 # VPC for the infrastructure.
 #
 resource "aws_vpc" "main" {
-  #assign_generated_ipv6_cidr_block = true
+  assign_generated_ipv6_cidr_block = true
   cidr_block                       = "${var.cidr}"
   enable_dns_hostnames             = "${var.enable_dns_hostnames}"
   enable_dns_support               = "${var.enable_dns_support}"
@@ -54,7 +55,7 @@ resource "aws_internet_gateway" "main" {
 }
 
 resource "aws_eip" "nat" {
-  count = "${var.single_nat_gateway ? 1 : (local._private_subnets > 0 && local._public_subnets > 0 ? local._private_subnets + local._public_subnets : var.private_subnets_amount + var.public_subnets_amount)}"
+  count = "${var.single_nat_gateway ? 1 : (local._private_subnets > 0 && local._public_subnets > 0 ? local._private_subnets : var.private_subnets_amount)}"
   vpc   = true
   lifecycle {
     create_before_destroy = true
@@ -66,7 +67,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "main" {
   depends_on    = ["aws_internet_gateway.main"]
-  count         = "${var.single_nat_gateway ? 1 : (local._private_subnets > 0 && local._public_subnets > 0 ? local._private_subnets + local._public_subnets : var.private_subnets_amount + var.public_subnets_amount)}"
+  count         = "${var.single_nat_gateway ? 1 : (local._private_subnets > 0 && local._public_subnets > 0 ? local._private_subnets : var.private_subnets_amount)}"
   allocation_id = "${element(aws_eip.nat.*.id, count.index)}"
   subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
   lifecycle {
@@ -121,6 +122,10 @@ resource "aws_route_table" "private" {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = "${element(aws_nat_gateway.main.*.id, count.index)}"
   }
+  route {
+    ipv6_cidr_block = "::/0"
+    nat_gateway_id = "${element(aws_nat_gateway.main.*.id, count.index)}"
+  }
   tags {
     Name = "${var.prefix}${var.name}-private${format("-%02d", count.index + 1)}"
   }
@@ -132,7 +137,11 @@ resource "aws_route_table" "public" {
   vpc_id     = "${aws_vpc.main.id}"
   route {
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = "${element(aws_nat_gateway.main.*.id, count.index + var.private_subnets_amount)}"
+    gateway_id = "${aws_internet_gateway.main.id)}"
+  }
+  route {
+    ipv6_cidr_block = "::/0"
+    gateway_id = "${aws_internet_gateway.main.id}"
   }
   tags {
     Name = "${var.prefix}${var.name}-public${format("-%02d", count.index + 1)}"
@@ -150,11 +159,13 @@ data "aws_availability_zones" "available" {
 # Base VPC subnets and respective routing associations.
 #
 resource "aws_subnet" "private" {
-  count                   = "${local._private_subnets > 0 && local._public_subnets > 0 ? local._private_subnets : var.private_subnets_amount}"
-  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
-  cidr_block              = "${local._private_subnets > 0 && local._public_subnets > 0 ? element(concat(var.private_subnets, list("")), count.index) : cidrsubnet(aws_vpc.main.cidr_block, local._newbits, count.index)}"
-  vpc_id                  = "${aws_vpc.main.id}"
-  map_public_ip_on_launch = false
+  count                           = "${local._private_subnets > 0 && local._public_subnets > 0 ? local._private_subnets : var.private_subnets_amount}"
+  availability_zone               = "${element(data.aws_availability_zones.available.names, count.index)}"
+  assign_ipv6_address_on_creation = true
+  cidr_block                      = "${local._private_subnets > 0 && local._public_subnets > 0 ? element(concat(var.private_subnets, list("")), count.index) : cidrsubnet(aws_vpc.main.cidr_block, local._newbits, count.index)}"
+  ipv6_cidr_block                 = "${cidrsubnet(aws_vpc.main.ipv6_cidr_block, (local._private_subnets > 0 && local._public_subnets > 0 ? local._newbits_alt : local._newbits), count.index)}"
+  vpc_id                          = "${aws_vpc.main.id}"
+  map_public_ip_on_launch         = false
   lifecycle {
     create_before_destroy = true
   }
@@ -164,11 +175,13 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_subnet" "public" {
-  count                   = "${local._private_subnets > 0 && local._public_subnets > 0 ? local._public_subnets : var.public_subnets_amount}"
-  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
-  cidr_block              = "${local._private_subnets > 0 && local._public_subnets > 0 ? element(concat(var.public_subnets, list("")), count.index) : cidrsubnet(aws_vpc.main.cidr_block, local._newbits, count.index + var.private_subnets_amount)}"
-  vpc_id                  = "${aws_vpc.main.id}"
-  map_public_ip_on_launch = false
+  count                           = "${local._private_subnets > 0 && local._public_subnets > 0 ? local._public_subnets : var.public_subnets_amount}"
+  availability_zone               = "${element(data.aws_availability_zones.available.names, count.index)}"
+  assign_ipv6_address_on_creation = true
+  cidr_block                      = "${local._private_subnets > 0 && local._public_subnets > 0 ? element(concat(var.public_subnets, list("")), count.index) : cidrsubnet(aws_vpc.main.cidr_block, local._newbits, count.index + var.private_subnets_amount)}"
+  ipv6_cidr_block                 = "${cidrsubnet(aws_vpc.main.ipv6_cidr_block, (local._private_subnets > 0 && local._public_subnets > 0 ? local._newbits_alt : local._newbits), count.index + var.private_subnets_amount)}"
+  vpc_id                          = "${aws_vpc.main.id}"
+  map_public_ip_on_launch         = false
   lifecycle {
     create_before_destroy = true
   }
@@ -213,6 +226,12 @@ resource "aws_default_security_group" "default" {
     to_port     = "0"
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = "0"
+    to_port     = "0"
+    protocol    = "-1"
+    ipv6_cidr_blocks = ["::/0"]
   }
   tags {
     Name = "${var.prefix}${var.name}-default"
