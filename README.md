@@ -9,7 +9,7 @@ local computer.
 
 ### Terraform
 
-Terraform version 0.8 or higher is required.
+Terraform version 0.10.3 or higher is required.
 
 Terraform installation instructions can be found
 [here](https://www.terraform.io/intro/getting-started/install.html).
