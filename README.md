@@ -25,13 +25,14 @@ AWS Command Line Interface installation instructions can be found [here](http://
 - `domain_name_servers` - List of name servers to be added to the '/etc/resolv.conf' file of the VPC instance(s). *[default value: '["AmazonProvidedDNS"]']*
 - `enable_dns_hostnames` - Should be true if you want to have custom DNS hostnames within the VPC. *[default value: true]*
 - `enable_dns_support` - Should be true if you want to have DNS support within the VPC. *[default value: true]*
+- `enable_s3_endpoint` - Should be true if you want to provision an S3 endpoint within the VPC. *[default value: false]*
 - `instance_tenancy` - The tenancy option for instances launched into the VPC. *[default value: 'default']*
 - `name` - The name for the VPC. *[default value: 'default']*
 - `prefix` - A prefix to prepend to the VPC name. *[default value: '']*
 - `private_subnets` - List of private subnet CIDRs for the VPC (e.g.: ['10.0.0.128/25']). *[default value: []]*
 - `public_subnets` - List of public subnet CIDRs for this VPC (e.g.: ['10.0.0.0/25']). *[default value: []]*
-- `private_subnets_amount` - Number of private subnet to create (only if `private_subnets` is empty). *[default value: '1']*
-- `public_subnets_amount` - Number of public subnet to create (only if `public_subnets` is empty. *[default value: '1']*
+- `private_subnets_amount` - Number of private subnet to create (only if `private_subnets` and `public_subnets` are both empty). *[default value: '1']*
+- `public_subnets_amount` - Number of public subnet to create (only if `private_subnets` and `public_subnets` are both empty. *[default value: '1']*
 - `single_nat_gateway` - Should be true if you want to have only one NAT Gateway for all subnets, false if you want to have one NAT Gateway per subnet. *[default value: true]*
 
 ## Usage
@@ -70,6 +71,8 @@ module "my_vpc" {
 - `default_network_acl_id` - **[type: string]** The ID of the network ACL created by default on VPC creation.
 - `default_route_table_id` - **[type: string]** The ID of the route table created by default on VPC creation.
 - `default_security_group_id` - **[type: string]** The ID of the security group created by default on VPC creation.
+- `dns_zone_id` - **[type: string]** The ID of the private DNS zone of the VPC.
+- `dns_resolvers` - **[type: list]** List of the private resolvers of the VPC.
 - `domain_name` - **[type: string]** The suffix domain name to use by default when resolving non Fully Qualified Domain Names.
 - `id` - **[type: string]** The ID of the VPC.
 - `igw_id` - **[type: string]** The ID of the Internet Gateway.
@@ -82,8 +85,8 @@ module "my_vpc" {
 - `private_subnets` - **[type: list]** List of the private subnet IDs.
 - `public_route_table_id` - **[type: list]** List of the public routing table IDs.
 - `public_subnets` - **[type: list]** List of the public subnet IDs.
-- `dns_zone_id` - **[type: string]** The ID of the private DNS zone of the VPC.
-- `dns_resolvers` - **[type: list]** List of the private resolvers of the VPC.
+- `s3_endpoint_id` - **[type: string]** The ID of the S3 endpoint.
+- `s3_endpoint_state` - **[type: string]** The state of the VPC endpoint.
 
 ## VPC Access
 

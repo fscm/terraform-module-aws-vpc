@@ -40,6 +40,12 @@ variable "enable_dns_support" {
   type        = "string"
 }
 
+variable "enable_s3_endpoint" {
+  description = "Should be true if you want to provision an S3 endpoint within the VPC."
+  default     = false
+  type        = "string"
+}
+
 variable "instance_tenancy" {
   description = "The tenancy option for instances launched into the VPC."
   default     = "default"

@@ -34,6 +34,18 @@ output "default_security_group_id" {
   value       = "${aws_default_security_group.default.id}"
 }
 
+output "dns_zone_id" {
+  description = "The ID of the private DNS zone of the VPC."
+  sensitive   = false
+  value       = "${element(concat(aws_route53_zone.private.*.zone_id, list("")), 0)}"
+}
+
+output "dns_resolvers" {
+  description = "List of the private resolvers of the VPC."
+  sensitive   = false
+  value       = ["${aws_route53_zone.private.*.name_servers}"]
+}
+
 output "domain_name" {
   description = "The suffix domain name to use by default when resolving non Fully Qualified Domain Names."
   sensitive   = false
@@ -49,7 +61,7 @@ output "id" {
 output "igw_id" {
   description = "The ID of the Internet Gateway."
   sensitive   = false
-  value       = "${aws_internet_gateway.main.id}"
+  value       = "${element(concat(aws_internet_gateway.main.*.id, list("")), 0)}"
 }
 
 output "ipv6_association_id" {
@@ -119,14 +131,14 @@ output "public_subnets" {
   value       = ["${aws_subnet.public.*.id}"]
 }
 
-output "dns_zone_id" {
-  description = "The ID of the private DNS zone of the VPC."
+output "s3_endpoint_id" {
+  description = "The ID of the S3 endpoint."
   sensitive   = false
-  value       = "${element(concat(aws_route53_zone.private.*.zone_id, list("")), 0)}"
+  value       = "${element(concat(aws_vpc_endpoint.s3.*.id, list("")), 0)}"
 }
 
-output "dns_resolvers" {
-  description = "List of the private resolvers of the VPC."
+output "s3_endpoint_state" {
+  description = "The state of the VPC endpoint."
   sensitive   = false
-  value       = ["${aws_route53_zone.private.*.name_servers}"]
+  value       = "${element(concat(aws_vpc_endpoint.s3.*.state, list("")), 0)}"
 }
