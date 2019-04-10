@@ -265,14 +265,14 @@ resource "aws_vpc_endpoint" "s3" {
 #
 resource "aws_vpc_endpoint_route_table_association" "s3_private" {
   #depends_on      = ["aws_vpc_endpoint.s3"]
-  count           = "${var.enable_s3_endpoint ? (max(length(var.private_subnets), length(var.public_subnets)) > 0 ? length(var.private_subnets) : var.private_subnets_amount) : 0}"
-  route_table_id  = "${element(aws_subnet.private.*.id, count.index)}"
+  count           = "${var.enable_s3_endpoint ? local._max_gateways : 0}"
+  route_table_id  = "${element(aws_route_table.private.*.id, count.index)}"
   vpc_endpoint_id = "${aws_vpc_endpoint.s3.id}"
 }
 
 resource "aws_vpc_endpoint_route_table_association" "s3_public" {
   #depends_on      = ["aws_vpc_endpoint.s3"]
   count           = "${var.enable_s3_endpoint ? (max(length(var.private_subnets), length(var.public_subnets)) > 0 ? signum(length(var.public_subnets)) : signum(var.public_subnets_amount)) : 0}"
-  route_table_id  = "${aws_route_table.public.id}"
+  route_table_id  = "${element(aws_route_table.public.id, count.index)}"
   vpc_endpoint_id = "${aws_vpc_endpoint.s3.id}"
 }
