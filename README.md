@@ -76,6 +76,8 @@ module "my_vpc" {
 - `domain_name` - **[type: string]** The suffix domain name to use by default when resolving non Fully Qualified Domain Names.
 - `id` - **[type: string]** The ID of the VPC.
 - `igw_id` - **[type: string]** The ID of the Internet Gateway.
+- `ipv6_association_id` - **[type: string]** The association ID for the IPv6 CIDR block.
+- `ipv6_cidr_block` - **[type: string]** The IPv6 CIDR block.
 - `main_route_table_id` - **[type: string]** The ID of the main route table associated with this VPC.
 - `name` - **[type: string]** The VPC name.
 - `nat_eip` - **[type: list]** List of the NATs public IP addresses.
