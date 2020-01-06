@@ -1,7 +1,7 @@
 #
-# Terraform module to create a VPC.
+# Terraform module to create or impersonate a VPC.
 #
-# Copyright 2016-2019, Frederico Martins
+# Copyright 2016-2020, Frederico Martins
 #   Author: Frederico Martins <http://github.com/fscm>
 #
 # SPDX-License-Identifier: MIT
